@@ -1,0 +1,109 @@
+const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp } = require('../../models/User/user.model');
+
+function HelloUser(req, res) {
+    return res.json({
+        message: "Hello User."
+    });
+}
+
+async function getUser(req, res) {
+    const id = req.body.id;
+    const userData = await getUserFromDatabase(id);
+
+    if (userData.message === 'failed') {
+        res.status(400).json({
+            message: "Got User Failed..!",
+        });
+    } else {
+        res.status(200).json({
+            message: "Got User Successfully",
+            data: userData.userData
+        });
+    }
+
+}
+
+async function addUser(req, res) {
+    const userData = req.body;
+    const addData = await addUserToDatabase(userData);
+    console.log(addData);
+
+    if (addData.success === true) {
+        res.status(201).json({
+            message: "User Added Successfully",
+            data: addData.data,
+        });
+    } else if (addData.message === 'found' && addData.success === false) {
+        res.json({
+            message: "User Already Found."
+        });
+    } else {
+        res.status(400).json({
+            message: "Add User Failed..!"
+        });
+    }
+}
+
+async function registerUser(req, res) {
+    const userData = req.body;
+    const response = await registerUserToDatabase(userData);
+    if (response.success === false && response.message === "Some Fields Required.!") {
+        return res.status(400).json({
+            message: "Fields Required..!"
+        });
+    } else if (response.success === false && response.message === "found") {
+        return res.status(400).json({
+            message: "User Already Exist..!"
+        });
+    } else {
+        return res.status(200).json({
+            message: "Register Success.",
+            user: response
+        });
+    }
+}
+
+async function loginUser(req, res) {
+    const userData = req.body;
+    const response = await loginUserToDatabase(userData);
+    if (response.success === false && response.message === "Fields Required.!") {
+        return res.status(400).json({
+            message: "Fields Required..!"
+        });
+    } else if (response.success === false && response.message === "not found") {
+        return res.status(400).json({
+            message: "User Not Found...Please Register First."
+        });
+    } else {
+        return res.status(200).json({
+            message: "Login Success.",
+            user: response
+        });
+    }
+}
+
+async function logoutUser(req, res) {
+    const id = req.body.id;
+    console.log(req.body);
+    const response = await logoutUserFromApp(id);
+
+    if (response.message === 'loggedOut') {
+        console.log('Success ?');
+        return res.status(200).json({
+            message: "User LoggedOut Successfully."
+        });
+    } else {
+        return res.status(400).json({
+            message: "User LoggedOut Failed."
+        });
+    }
+}
+
+module.exports = {
+    HelloUser,
+    addUser,
+    getUser,
+    registerUser,
+    loginUser,
+    logoutUser
+};
