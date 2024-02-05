@@ -51,6 +51,48 @@ async function signWithGoogleAccountInDatabase(profileData) {
     }
 };
 
+async function completeRegisterInDatabase(profileData) {
+    if (!profileData.email || profileData.email === '' || profileData.id === '' || !profileData.id || !profileData.age || !profileData.gender || profileData.gender === '' || !profileData.weight || !profileData.height || !profileData.goal || profileData.goal === '' || !profileData.experience || profileData.experience === '' || !profileData.bodyFatPercentage || !profileData.muscleMass || !profileData.workoutDurationPreference || profileData.workoutDurationPreference === '' || !profileData.workoutFrequencyPreference || profileData.workoutFrequencyPreference === '' || !profileData.preferredExerciseTypes || profileData.preferredExerciseTypes === '' || !profileData.trainingEnvironmentPreference || profileData.trainingEnvironmentPreference === '' || !profileData.accessToEquipment || profileData.accessToEquipment === '' || !profileData.motivationLevel || profileData.motivationLevel === '' || !profileData.stressLevels) {
+        console.log('Error');
+        return {
+            success: false,
+            message: "Some Fields Required.!"
+        };
+    } else {
+        try {
+            const registeredUser = await usersDatabase.findOneAndUpdate({ _id: profileData.id }, {
+                $set: {
+                    age: profileData.age,
+                    gender: profileData.gender,
+                    weight: profileData.weight,
+                    height: profileData.height,
+                    goal: profileData.goal,
+                    experience: profileData.experience,
+                    bodyFatPercentage: profileData.bodyFatPercentage,
+                    muscleMass: profileData.muscleMass,
+                    workoutDurationPreference: profileData.workoutDurationPreference,
+                    workoutFrequencyPreference: profileData.workoutFrequencyPreference,
+                    preferredExerciseTypes: profileData.preferredExerciseTypes,
+                    trainingEnvironmentPreference: profileData.trainingEnvironmentPreference,
+                    accessToEquipment: profileData.accessToEquipment,
+                    motivationLevel: profileData.motivationLevel,
+                    stressLevels: profileData.stressLevels
+                }
+            }, { new: true });
+
+            return {
+                message: 'Updated Successfully',
+                updatedUser: registeredUser
+            };
+        } catch (err) {
+            return {
+                message: "Error Happened."
+            };
+        }
+    }
+}
+
 module.exports = {
-    signWithGoogleAccountInDatabase
+    signWithGoogleAccountInDatabase,
+    completeRegisterInDatabase
 };

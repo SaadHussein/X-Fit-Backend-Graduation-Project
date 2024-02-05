@@ -1,4 +1,4 @@
-const { signWithGoogleAccountInDatabase } = require('../../models/User/googleUser.model');
+const { signWithGoogleAccountInDatabase, completeRegisterInDatabase } = require('../../models/User/googleUser.model');
 require('dotenv').config();
 
 async function signWithGoogleAccount(profile) {
@@ -13,6 +13,18 @@ async function signWithGoogleAccount(profile) {
     return response;
 }
 
+async function completeRegister(req, res) {
+    const data = req.body;
+    const response = await completeRegisterInDatabase(data);
+
+    if (response.message === 'Updated Successfully') {
+        return res.status(200).json(response);
+    } else {
+        return res.status(400).json(response);
+    }
+}
+
 module.exports = {
     signWithGoogleAccount,
+    completeRegister
 };

@@ -3,7 +3,7 @@ const GoogleUserRouter = express.Router();
 const passport = require('passport');
 const { Strategy } = require('passport-google-oauth20');
 const checkedLoggedIn = require('../../middleware/checkLoggedIn');
-const { signWithGoogleAccount } = require('./googleAuth.controller');
+const { signWithGoogleAccount, completeRegister } = require('./googleAuth.controller');
 require('dotenv').config();
 
 const config = {
@@ -27,12 +27,10 @@ async function verifyCallback(accessToken, refreshToken, profile, done) {
 passport.use(new Strategy(AuthOptions, verifyCallback));
 
 passport.serializeUser((user, done) => {
-    console.log(user);
     done(null, user);
 });
 
 passport.deserializeUser((user, done) => {
-    console.log(user);
     done(null, user);
 });
 
@@ -52,5 +50,7 @@ GoogleUserRouter.get('/auth/logout', checkedLoggedIn, (req, res) => {
     req.logout();
     return res.redirect('http://localhost:3000');
 });
+
+GoogleUserRouter.post('/completeRegister', completeRegister);
 
 module.exports = GoogleUserRouter;
