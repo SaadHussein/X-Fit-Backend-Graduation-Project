@@ -9,6 +9,7 @@ async function signWithGoogleAccount(profile) {
     };
 
     const response = await signWithGoogleAccountInDatabase(data);
+    console.log(response);
 
     return response;
 }

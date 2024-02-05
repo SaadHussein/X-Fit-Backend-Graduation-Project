@@ -12,6 +12,10 @@ const userSchema = mongoose.Schema({
         },
         token: {
             type: String,
+        },
+        verified: {
+            type: Boolean,
+            default: false
         }
     },
     email: {

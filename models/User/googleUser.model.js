@@ -33,6 +33,7 @@ async function signWithGoogleAccountInDatabase(profileData) {
                     authentication: {
                         password: hashedPassword,
                         token: token,
+                        verified: true,
                     }
                 });
 

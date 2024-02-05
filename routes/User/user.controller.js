@@ -1,4 +1,4 @@
-const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp } = require('../../models/User/user.model');
+const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase } = require('../../models/User/user.model');
 
 function HelloUser(req, res) {
     return res.json({
@@ -46,7 +46,7 @@ async function addUser(req, res) {
 
 async function registerUser(req, res) {
     const userData = req.body;
-    const response = await registerUserToDatabase(userData);
+    const response = await registerUserToDatabase(userData, req);
     if (response.success === false && response.message === "Some Fields Required.!") {
         return res.status(400).json({
             message: "Fields Required..!"
@@ -55,11 +55,24 @@ async function registerUser(req, res) {
         return res.status(400).json({
             message: "User Already Exist..!"
         });
+    } else if (response.message === 'Error When Trying To Send Email To User.') {
+        return res.status(400).json(response);
     } else {
         return res.status(200).json({
-            message: "Register Success.",
+            message: "Register Success, Please Verify Your Account From The Mail We Send To Your Email.",
             user: response
         });
+    }
+}
+
+async function verifyEmail(req, res) {
+    const token = req.params.token;
+    const response = await verifyEmailInDatabase(token);
+
+    if (response.message === 'Email Verified Successfully.') {
+        return res.status(200).json(response);
+    } else {
+        return res.status(400).json(response);
     }
 }
 
@@ -105,5 +118,6 @@ module.exports = {
     getUser,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    verifyEmail
 };

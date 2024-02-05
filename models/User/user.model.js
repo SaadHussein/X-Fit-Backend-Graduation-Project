@@ -1,6 +1,7 @@
 const usersDatabase = require('./user.mongo');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { generateToken, getMailOptions, getTransport } = require("../../helpers/emailService");
 require('dotenv').config();
 
 async function getUserFromDatabase(userID) {
@@ -54,7 +55,7 @@ async function addUserToDatabase(userData) {
     }
 }
 
-async function registerUserToDatabase(userData) {
+async function registerUserToDatabase(userData, req) {
     if (!userData.name || !userData.age || !userData.email || !userData.gender || !userData.weight || !userData.height || !userData.goal || !userData.experience || !userData.authentication.password || !userData.bodyFatPercentage || !userData.muscleMass || !userData.workoutDurationPreference || !userData.workoutFrequencyPreference || !userData.preferredExerciseTypes || !userData.trainingEnvironmentPreference || !userData.accessToEquipment || !userData.motivationLevel || !userData.stressLevels) {
         return {
             success: false,
@@ -74,7 +75,8 @@ async function registerUserToDatabase(userData) {
         const updatedUser = {
             ...userData, authentication: {
                 password: hashedPassword,
-                token: ""
+                token: "",
+                verified: false
             }
         };
 
@@ -86,12 +88,66 @@ async function registerUserToDatabase(userData) {
 
         await newUser.save();
 
+        const tokenForVerify = generateToken(userData.email);
+        const link = `${req.protocol}://${req.get('host')}/api/v1/user/verifyEmail/${tokenForVerify}`;
+        console.log(link);
+        let mailRequest = getMailOptions(userData.email, link);
+
+        let mailCreated = "";
+        getTransport().sendMail(mailRequest, (error) => {
+            if (error) {
+                return {
+                    message: 'Error When Trying To Send Email To User.'
+                };
+            } else {
+                mailCreated = 'Mail Sent To The User';
+            }
+        });
+
         return {
             name: newUser.name,
             id: newUser._id.toString(),
             email: newUser.email,
             token: newUser.authentication.token
         };
+    }
+}
+
+async function verifyEmailInDatabase(token) {
+    if (!token) {
+        return {
+            message: "Token Required."
+        };
+    } else {
+        let decodedToken;
+        try {
+            decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        } catch {
+            return {
+                message: "Invalid Authentication Credentials"
+            };
+        }
+
+        if (!decodedToken.hasOwnProperty("email")) {
+            return {
+                message: "Invalid Authentication Credentials."
+            };
+        }
+
+        const { email } = decodedToken;
+        try {
+            const userInDatabase = await usersDatabase.findOne({ email: email });
+            userInDatabase.authentication.verified = true;
+            await userInDatabase.save();
+
+            return {
+                message: "Email Verified Successfully."
+            };
+        } catch (err) {
+            return {
+                message: "Error Happened."
+            };
+        }
     }
 }
 
@@ -150,5 +206,6 @@ module.exports = {
     getUserFromDatabase,
     registerUserToDatabase,
     loginUserToDatabase,
-    logoutUserFromApp
+    logoutUserFromApp,
+    verifyEmailInDatabase
 };
