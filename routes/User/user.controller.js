@@ -1,4 +1,6 @@
-const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase } = require('../../models/User/user.model');
+const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase, resetPasswordInDatabase, checkEmailFound } = require('../../models/User/user.model');
+const { generateToken, getTransport, getMailOptionsForForgetPassword } = require("../../helpers/emailService");
+
 
 function HelloUser(req, res) {
     return res.json({
@@ -112,6 +114,52 @@ async function logoutUser(req, res) {
     }
 }
 
+async function forgetPassword(req, res) {
+    const email = req.body.email;
+    const response = await checkEmailFound(email);
+
+    if (response.message === 'User Found.') {
+        const token = generateToken(email);
+        const link = `${req.protocol}://${req.get('host')}/forgetPassword/${token}`;
+        let mailRequest = getMailOptionsForForgetPassword(email, link);
+
+        return getTransport().sendMail(mailRequest, (error) => {
+            if (error) {
+                return res.status(500).json({ message: "Can't send email." });
+            } else {
+                return res.status(200).json({
+                    message: `Link Sent To ${email}`,
+                });
+            }
+        });
+    } else {
+        return res.status(400).json({
+            message: "Email Not Found."
+        });
+    }
+}
+
+async function resetPassword(req, res) {
+    const data = req.body;
+    const token = req.params.token;
+
+    if (data.ConfirmNewPassword !== data.newPassword) {
+        return res.status(400).json({
+            message: "The Password and Confirm Password Do Not Match."
+        });
+    }
+
+    const response = await resetPasswordInDatabase(data, token);
+
+    console.log(response);
+
+    if (response.message === 'Password Changed Successfully.') {
+        return res.status(200).json(response);
+    } else {
+        return res.status(400).json(response);
+    }
+}
+
 module.exports = {
     HelloUser,
     addUser,
@@ -119,5 +167,7 @@ module.exports = {
     registerUser,
     loginUser,
     logoutUser,
-    verifyEmail
+    verifyEmail,
+    forgetPassword,
+    resetPassword
 };

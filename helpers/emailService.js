@@ -25,15 +25,32 @@ function getMailOptions(email, link) {
 
     return {
         body,
-        subject: "Verify Your Email on X-Fit",
+        subject: "Reset Your Email Password on X-Fit",
         to: email,
         html: body,
         from: process.env.EMAIL_ADDRESS,
     };
 };
 
+function getMailOptionsForForgetPassword(email, link) {
+    let body = `
+    <h2>Hey ${email}</h2>
+    <p>Here's The Link you Requested to Reset your Password: </p>
+    <p>${link}</p>
+    <p>We are Wait You on X-Fit</p>`;
+
+    return {
+        body,
+        subject: "Verify Your Email on X-Fit",
+        to: email,
+        html: body,
+        from: process.env.EMAIL_ADDRESS,
+    };
+}
+
 module.exports = {
     getTransport,
     generateToken,
-    getMailOptions
+    getMailOptions,
+    getMailOptionsForForgetPassword
 };

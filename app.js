@@ -20,6 +20,7 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/v1', api);
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
@@ -35,6 +36,10 @@ app.get('/failer', (req, res) => {
 
 app.get('/checked', checkedLoggedIn, (req, res) => {
     res.sendFile(path.join(__dirname, "public", "CheckLoggedIn.html"));
+});
+
+app.get('/forgetPassword/:token', (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "ForgetPassword.html"));
 });
 
 module.exports = app;

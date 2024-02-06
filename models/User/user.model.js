@@ -201,11 +201,67 @@ async function logoutUserFromApp(userId) {
     };
 }
 
+async function checkEmailFound(email) {
+    try {
+        if (!email || email === '') {
+            return {
+                message: "Please Send Email"
+            };
+        } else {
+            const User = await usersDatabase.findOne({ email: email });
+
+            if (!User) {
+                return {
+                    message: "User Not Found"
+                };
+            }
+
+            return {
+                message: "User Found."
+            };
+        }
+    } catch (err) {
+        return {
+            message: "Error Happened."
+        };
+    }
+}
+
+async function resetPasswordInDatabase(PasswordData, token) {
+    try {
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+        if (!decodedToken.hasOwnProperty("email")) {
+            return {
+                message: "Invalid Authentication Credentials."
+            };
+        }
+
+        const { email } = decodedToken;
+
+        const newHashedPassword = await bcrypt.hash(PasswordData.newPassword, 12);
+
+        const userInDatabase = await usersDatabase.findOne({ email: email });
+        userInDatabase.authentication.password = newHashedPassword;
+        await userInDatabase.save();
+
+        return {
+            message: "Password Changed Successfully."
+        };
+    } catch (err) {
+        return {
+            message: "Error Happened When Trying to Change Password."
+        };
+    }
+}
+
 module.exports = {
     addUserToDatabase,
     getUserFromDatabase,
     registerUserToDatabase,
     loginUserToDatabase,
     logoutUserFromApp,
-    verifyEmailInDatabase
+    verifyEmailInDatabase,
+    resetPasswordInDatabase,
+    checkEmailFound
 };
