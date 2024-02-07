@@ -16,7 +16,7 @@ const AuthOptions = {
     clientID: config.ClientID,
     clientSecret: config.ClientSecret,
     callbackURL: "http://localhost:3000/api/v1/facebookUser/auth/facebook/callback",
-    profileFields: ['email', 'name'],
+    profileFields: ['email', 'displayName'],
 };
 
 async function verifyCallback(accessToken, refreshToken, profile, done) {
