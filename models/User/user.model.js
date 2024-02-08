@@ -77,7 +77,8 @@ async function registerUserToDatabase(userData, req) {
                 password: hashedPassword,
                 token: "",
                 verified: false
-            }
+            },
+            signedWith: 'Email'
         };
 
         const newUser = new usersDatabase(updatedUser);
@@ -108,7 +109,8 @@ async function registerUserToDatabase(userData, req) {
             name: newUser.name,
             id: newUser._id.toString(),
             email: newUser.email,
-            token: newUser.authentication.token
+            token: newUser.authentication.token,
+            signedWith: newUser.signedWith
         };
     }
 }
@@ -185,7 +187,8 @@ async function loginUserToDatabase(userData) {
             name: isUserFound.name,
             id: isUserFound._id.toString(),
             email: isUserFound.email,
-            token: isUserFound.authentication.token
+            token: isUserFound.authentication.token,
+            signedWith: isUserFound.signedWith
         };
     }
 }

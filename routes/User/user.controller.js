@@ -99,11 +99,9 @@ async function loginUser(req, res) {
 
 async function logoutUser(req, res) {
     const id = req.body.id;
-    console.log(req.body);
     const response = await logoutUserFromApp(id);
 
     if (response.message === 'loggedOut') {
-        console.log('Success ?');
         return res.status(200).json({
             message: "User LoggedOut Successfully."
         });

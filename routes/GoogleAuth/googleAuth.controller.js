@@ -1,4 +1,4 @@
-const { signWithGoogleAccountInDatabase, completeRegisterInDatabase } = require('../../models/User/googleUser.model');
+const { signWithGoogleAccountInDatabase, completeRegisterInDatabase, logoutAccountWithGoogleFromDatabase } = require('../../models/User/googleUser.model');
 require('dotenv').config();
 
 async function signWithGoogleAccount(profile) {
@@ -25,7 +25,20 @@ async function completeRegister(req, res) {
     }
 }
 
+async function logoutAccountWithGoogle(req, res) {
+    req.logout();
+    const id = req.params.id;
+    const response = await logoutAccountWithGoogleFromDatabase(id);
+
+    if (response.message === 'User Logged Out.') {
+        return res.status(200).json(response);
+    } else {
+        return res.status(400).json(response);
+    }
+}
+
 module.exports = {
     signWithGoogleAccount,
-    completeRegister
+    completeRegister,
+    logoutAccountWithGoogle
 };

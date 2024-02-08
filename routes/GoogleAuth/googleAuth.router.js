@@ -3,7 +3,7 @@ const GoogleUserRouter = express.Router();
 const passport = require('passport');
 const { Strategy } = require('passport-google-oauth20');
 const checkedLoggedIn = require('../../middleware/checkLoggedIn');
-const { signWithGoogleAccount, completeRegister } = require('./googleAuth.controller');
+const { signWithGoogleAccount, completeRegister, logoutAccountWithGoogle } = require('./googleAuth.controller');
 require('dotenv').config();
 
 const config = {
@@ -46,10 +46,7 @@ GoogleUserRouter.get('/auth/google/callback', passport.authenticate('google', {
     console.log('Google Called Us Back');
 });
 
-GoogleUserRouter.get('/auth/logout', checkedLoggedIn, (req, res) => {
-    req.logout();
-    return res.redirect('http://localhost:3000');
-});
+GoogleUserRouter.get('/auth/logout/:id', checkedLoggedIn, logoutAccountWithGoogle);
 
 GoogleUserRouter.post('/completeRegister', completeRegister);
 

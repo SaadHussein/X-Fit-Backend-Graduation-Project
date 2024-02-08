@@ -34,7 +34,8 @@ async function signWithGoogleAccountInDatabase(profileData) {
                         password: hashedPassword,
                         token: token,
                         verified: true,
-                    }
+                    },
+                    signedWith: "Google"
                 });
 
                 await newUser.save();
@@ -93,7 +94,36 @@ async function completeRegisterInDatabase(profileData) {
     }
 }
 
+async function logoutAccountWithGoogleFromDatabase(UserID) {
+    if (!UserID) {
+        return {
+            messgae: "ID Required."
+        };
+    } else {
+        try {
+            const User = await usersDatabase.findById(UserID);
+
+            if (!User) {
+                return {
+                    message: "User Not Found."
+                };
+            }
+
+            User.authentication.token = '';
+            await User.save();
+            return {
+                message: "User Logged Out."
+            };
+        } catch (err) {
+            return {
+                message: "Error Happened."
+            };
+        }
+    }
+}
+
 module.exports = {
     signWithGoogleAccountInDatabase,
-    completeRegisterInDatabase
+    completeRegisterInDatabase,
+    logoutAccountWithGoogleFromDatabase
 };
