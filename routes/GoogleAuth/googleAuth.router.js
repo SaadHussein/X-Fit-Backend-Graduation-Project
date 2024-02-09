@@ -16,8 +16,7 @@ const config = {
 const AuthOptions = {
     clientID: config.ClientID,
     clientSecret: config.ClientSecret,
-    callbackURL: "https://x-fit-backend-graduation-project.vercel.app/api/v1/googleUser/auth/google/callback"
-    // callbackURL: "http://localhost:3000/api/v1/googleUser/auth/google/callback"
+    callbackURL: "http://localhost:3000/api/v1/googleUser/auth/google/callback"
 };
 
 async function verifyCallback(accessToken, refreshToken, profile, done) {
