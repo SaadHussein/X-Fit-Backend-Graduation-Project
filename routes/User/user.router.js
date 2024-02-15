@@ -9,9 +9,9 @@ userRouter.post('/addUser', addUser);
 
 
 userRouter.post('/register', registerUser);
-userRouter.get('/verifyEmail/:token', verifyEmail);
 userRouter.post('/login', loginUser);
 userRouter.post('/logout', jwtAuthentication, logoutUser);
+userRouter.get('/verifyEmail/:token', verifyEmail);
 userRouter.post('/forgetPassword', forgetPassword);
 userRouter.post('/resetPassword/:token', resetPassword);
 
