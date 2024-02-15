@@ -1,4 +1,4 @@
-const { createCircleInDatabase } = require('../../models/Circle/circle.model');
+const { createCircleInDatabase, addMemberToCircleInDatabase } = require('../../models/Circle/circle.model');
 
 async function createCircle(req, res) {
     const data = req.body;
@@ -19,6 +19,25 @@ async function createCircle(req, res) {
 
 }
 
+async function addMemberToCircle(req, res) {
+    const data = req.body;
+
+    if (!data.memberID || data.memberID === "" || !data.circleID || data.circleID === "") {
+        return res.status(400).json({
+            message: "Fields Required."
+        });
+    }
+
+    const result = await addMemberToCircleInDatabase(data);
+
+    if (result.message === 'Added Successfully.') {
+        return res.status(200).json(result);
+    } else {
+        return res.status(404).json(result);
+    }
+}
+
 module.exports = {
     createCircle,
+    addMemberToCircle
 };

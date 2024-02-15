@@ -39,6 +39,30 @@ async function createCircleInDatabase(circleData) {
     }
 }
 
+async function addMemberToCircleInDatabase(IDs) {
+    try {
+        const user = await userDatabase.findById(IDs.memberID);
+        const circle = await circleDatabase.findById(IDs.circleID);
+
+        circle.members.push({
+            memberName: user.name,
+            memberID: IDs.memberID
+        });
+
+        await circle.save();
+
+        return {
+            message: "Added Successfully."
+        };
+
+    } catch (err) {
+        return {
+            message: "Error Happened."
+        };
+    }
+}
+
 module.exports = {
     createCircleInDatabase,
+    addMemberToCircleInDatabase
 };
