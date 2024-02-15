@@ -39,10 +39,30 @@ async function createCircleInDatabase(circleData) {
     }
 }
 
+async function removeCircleFromDatabase(circleID) {
+    try {
+        await circleDatabase.deleteOne({ _id: circleID });
+
+        return {
+            message: "Deleted Successfully."
+        };
+    } catch (err) {
+        return {
+            message: "Error Happened."
+        };
+    }
+}
+
 async function addMemberToCircleInDatabase(IDs) {
     try {
         const user = await userDatabase.findById(IDs.memberID);
         const circle = await circleDatabase.findById(IDs.circleID);
+
+        if (!circle || !user) {
+            return {
+                message: "UserID or CircleID Not Correct."
+            };
+        }
 
         circle.members.push({
             memberName: user.name,
@@ -52,7 +72,30 @@ async function addMemberToCircleInDatabase(IDs) {
         await circle.save();
 
         return {
-            message: "Added Successfully."
+            message: "Added Successfully.",
+            circleData: circle
+        };
+
+    } catch (err) {
+        return {
+            message: "Error Happened."
+        };
+    }
+}
+
+async function getCircleById(circleID) {
+    try {
+        const circle = await circleDatabase.findById(circleID);
+
+        if (!circle) {
+            return {
+                message: "Circle Not Found."
+            };
+        }
+
+        return {
+            message: "Circle Found.",
+            circleData: circle
         };
 
     } catch (err) {
@@ -64,5 +107,7 @@ async function addMemberToCircleInDatabase(IDs) {
 
 module.exports = {
     createCircleInDatabase,
-    addMemberToCircleInDatabase
+    removeCircleFromDatabase,
+    addMemberToCircleInDatabase,
+    getCircleById,
 };
