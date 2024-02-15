@@ -12,13 +12,23 @@ async function createCircleInDatabase(circleData) {
         }
 
         const newCircle = new circleDatabase(circleData);
+        console.log(newCircle);
+
+        const member = {
+            memberName: userId.name,
+            memberID: circleData.adminID
+        };
+
+        newCircle.members.push(member);
+
         await newCircle.save();
 
         return {
             message: "Created Successfully.",
             data: {
+                id: newCircle._id.toString(),
                 ...circleData,
-                id: newCircle._id.toString()
+                members: newCircle.members
             }
         };
 
