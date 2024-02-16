@@ -83,6 +83,106 @@ async function addMemberToCircleInDatabase(IDs) {
     }
 }
 
+async function removeMemberFromCircle(IDs) {
+    try {
+        const circle = await circleDatabase.findById(IDs.circleID);
+
+        if (!circle) {
+            return {
+                message: "Wrong in IDs"
+            };
+        }
+
+        if (circle.adminID !== IDs.adminID) {
+            return {
+                message: "Sorry, Admin only Can Do This."
+            };
+        }
+
+        const updatedMembers = circle.members.filter((member) => member.memberID !== IDs.memberID);
+        circle.members = [...updatedMembers];
+
+        await circle.save();
+
+        return {
+            message: "Member Deleted Successfully.",
+            circleData: circle
+        };
+    } catch (err) {
+        return {
+            message: "Error Happened."
+        };
+    }
+}
+
+async function memberLeaveFromCircle(IDs) {
+    try {
+        const circle = await circleDatabase.findById(IDs.circleID);
+
+        if (!circle) {
+            return {
+                message: "Error in CircleID"
+            };
+        }
+
+        const user = circle.members.find((member) => member.memberID === IDs.memberID);
+
+        if (!user) {
+            return {
+                message: "User Not Found in This Circle"
+            };
+        }
+
+        const updatedMembers = circle.members.filter((member) => member.memberID !== IDs.memberID);
+        circle.members = [...updatedMembers];
+
+        await circle.save();
+
+        return {
+            message: "Member Leaved Successfully.",
+            circleData: circle
+        };
+    } catch (err) {
+        return {
+            message: "Error Happened."
+        };
+    }
+}
+
+async function editCircleDataInDatabase(updatedData) {
+    try {
+        const ourCircle = await circleDatabase.findById(updatedData.circleID);
+
+        if (!ourCircle) {
+            return {
+                messgae: "Error in CircleID"
+            };
+        }
+
+        if (updatedData.userID !== ourCircle.adminID) {
+            return {
+                message: "Only Admin Can Do This"
+            };
+        }
+
+        const circle = await circleDatabase.findByIdAndUpdate(updatedData.circleID, {
+            $set: {
+                name: updatedData.name,
+                description: updatedData.description || ""
+            }
+        }, { new: true });
+
+        return {
+            message: "Circle Updated Successfully.",
+            circleData: circle
+        };
+    } catch (err) {
+        return {
+            message: "Error Happened."
+        };
+    }
+}
+
 async function getCircleById(circleID) {
     try {
         const circle = await circleDatabase.findById(circleID);
@@ -110,4 +210,7 @@ module.exports = {
     removeCircleFromDatabase,
     addMemberToCircleInDatabase,
     getCircleById,
+    removeMemberFromCircle,
+    editCircleDataInDatabase,
+    memberLeaveFromCircle
 };
