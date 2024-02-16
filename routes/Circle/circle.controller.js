@@ -58,13 +58,13 @@ async function getCircle(req, res) {
 async function deleteCircle(req, res) {
     const data = req.body;
 
-    if (data.id === "" || !data.id) {
+    if (data.circleID === "" || !data.circleID || data.adminID === "" || !data.adminID) {
         return res.status(404).json({
-            message: "ID Required."
+            message: "IDs Required."
         });
     }
 
-    const result = await removeCircleFromDatabase(data.id);
+    const result = await removeCircleFromDatabase(data);
 
     if (result.message === "Deleted Successfully.") {
         return res.status(200).json(result);

@@ -39,9 +39,23 @@ async function createCircleInDatabase(circleData) {
     }
 }
 
-async function removeCircleFromDatabase(circleID) {
+async function removeCircleFromDatabase(IDs) {
     try {
-        await circleDatabase.deleteOne({ _id: circleID });
+        const circle = await circleDatabase.findById(IDs.circleID);
+
+        if (!circle) {
+            return {
+                message: "ID Circle Not Found"
+            };
+        }
+
+        if (circle.adminID !== IDs.adminID) {
+            return {
+                message: "Only Admin can remove The Circle."
+            };
+        }
+
+        await circleDatabase.deleteOne({ _id: IDs.circleID });
 
         return {
             message: "Deleted Successfully."
