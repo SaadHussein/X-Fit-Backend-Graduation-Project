@@ -56,61 +56,68 @@ async function addUserToDatabase(userData) {
 }
 
 async function registerUserToDatabase(userData, req) {
-    if (!userData.name || !userData.age || !userData.email || !userData.gender || !userData.weight || !userData.height || !userData.goal || !userData.experience || !userData.authentication.password || !userData.bodyFatPercentage || !userData.muscleMass || !userData.workoutDurationPreference || !userData.workoutFrequencyPreference || !userData.preferredExerciseTypes || !userData.trainingEnvironmentPreference || !userData.accessToEquipment || !userData.motivationLevel || !userData.stressLevels) {
-        return {
-            success: false,
-            message: "Some Fields Required.!"
-        };
-    } else {
-        const isUserFound = await usersDatabase.findOne({ email: userData.email });
-        if (isUserFound) {
+    try {
+        if (!userData.name || !userData.age || !userData.email || !userData.gender || !userData.weight || !userData.height || !userData.goal || !userData.experience || !userData.authentication.password || !userData.bodyFatPercentage || !userData.muscleMass || !userData.workoutDurationPreference || !userData.workoutFrequencyPreference || !userData.preferredExerciseTypes || !userData.trainingEnvironmentPreference || !userData.accessToEquipment || !userData.motivationLevel || !userData.stressLevels) {
             return {
                 success: false,
-                message: "found"
+                message: "Some Fields Required.!"
+            };
+        } else {
+            const isUserFound = await usersDatabase.findOne({ email: userData.email });
+            if (isUserFound) {
+                return {
+                    success: false,
+                    message: "found"
+                };
+            }
+
+            const hashedPassword = await bcrypt.hash(userData.authentication.password, 12);
+
+            const updatedUser = {
+                ...userData, authentication: {
+                    password: hashedPassword,
+                    token: "",
+                    verified: false
+                },
+                signedWith: 'Email'
+            };
+
+            const newUser = new usersDatabase(updatedUser);
+
+            const token = jwt.sign({ userID: newUser._id.toString(), name: newUser.name }, process.env.JWT_SECRET_KEY);
+
+            newUser.authentication.token = token;
+
+            await newUser.save();
+
+            const tokenForVerify = generateToken(userData.email);
+            const link = `${req.protocol}://${req.get('host')}/api/v1/user/verifyEmail/${tokenForVerify}`;
+            console.log(link);
+            let mailRequest = getMailOptions(userData.email, link);
+
+            let mailCreated = "";
+            getTransport().sendMail(mailRequest, (error) => {
+                if (error) {
+                    return {
+                        message: 'Error When Trying To Send Email To User.'
+                    };
+                } else {
+                    mailCreated = 'Mail Sent To The User';
+                }
+            });
+
+            return {
+                name: newUser.name,
+                id: newUser._id.toString(),
+                email: newUser.email,
+                token: newUser.authentication.token,
+                signedWith: newUser.signedWith
             };
         }
-
-        const hashedPassword = await bcrypt.hash(userData.authentication.password, 12);
-
-        const updatedUser = {
-            ...userData, authentication: {
-                password: hashedPassword,
-                token: "",
-                verified: false
-            },
-            signedWith: 'Email'
-        };
-
-        const newUser = new usersDatabase(updatedUser);
-
-        const token = jwt.sign({ userID: newUser._id.toString(), name: newUser.name }, process.env.JWT_SECRET_KEY);
-
-        newUser.authentication.token = token;
-
-        await newUser.save();
-
-        const tokenForVerify = generateToken(userData.email);
-        const link = `${req.protocol}://${req.get('host')}/api/v1/user/verifyEmail/${tokenForVerify}`;
-        console.log(link);
-        let mailRequest = getMailOptions(userData.email, link);
-
-        let mailCreated = "";
-        getTransport().sendMail(mailRequest, (error) => {
-            if (error) {
-                return {
-                    message: 'Error When Trying To Send Email To User.'
-                };
-            } else {
-                mailCreated = 'Mail Sent To The User';
-            }
-        });
-
+    } catch (err) {
         return {
-            name: newUser.name,
-            id: newUser._id.toString(),
-            email: newUser.email,
-            token: newUser.authentication.token,
-            signedWith: newUser.signedWith
+            message: "Error Happened.",
+            status: false
         };
     }
 }

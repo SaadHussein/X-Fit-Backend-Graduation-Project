@@ -59,6 +59,10 @@ async function registerUser(req, res) {
         });
     } else if (response.message === 'Error When Trying To Send Email To User.') {
         return res.status(400).json(response);
+    } else if (response.message === 'Error Happened.' && response.status === false) {
+        return res.status(404).json({
+            message: "Register Failed Try Again Later."
+        });
     } else {
         return res.status(200).json({
             message: "Register Success, Please Verify Your Account From The Mail We Send To Your Email.",
