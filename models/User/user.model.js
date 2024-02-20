@@ -282,6 +282,72 @@ async function resetPasswordInDatabase(PasswordData, token) {
     }
 }
 
+async function createUserInDatabase(userData, req) {
+    try {
+        if (userData.email === "" || userData.password === "" || userData.name === "" || !userData.email || !userData.password || !userData.name) {
+            return {
+                status: false,
+                message: "Fields Required."
+            };
+        }
+
+        const isUserFound = await usersDatabase.findOne({ email: userData.email });
+
+        console.log(isUserFound);
+
+        if (isUserFound) {
+            return {
+                message: "Email Already Exist.",
+                status: false
+            };
+        }
+
+        const hashedPassword = await bcrypt.hash(userData.password, 12);
+
+        const token = jwt.sign({ name: userData.name, email: userData.email }, process.env.JWT_SECRET_KEY);
+
+        const newUser = new usersDatabase({
+            name: userData.name,
+            email: userData.email,
+            authentication: {
+                password: hashedPassword,
+                token: token
+            },
+            signedWith: 'Email'
+        });
+
+        await newUser.save();
+
+        const tokenForVerify = generateToken(userData.email);
+        const link = `${req.protocol}://${req.get('host')}/api/v1/user/verifyEmail/${tokenForVerify}`;
+        console.log(link);
+        let mailRequest = getMailOptions(userData.email, link);
+
+        let mailCreated = "";
+        getTransport().sendMail(mailRequest, (error) => {
+            if (error) {
+                return {
+                    message: 'Error When Trying To Send Email To User.'
+                };
+            } else {
+                mailCreated = 'Mail Sent To The User';
+            }
+        });
+
+        return {
+            userData: newUser,
+            message: "Register Successfully, We send Mail to your Email to verify your Account.",
+            status: true
+        };
+    } catch (err) {
+        return {
+            message: "Error Happened.",
+            error: err,
+            status: false
+        };
+    }
+}
+
 module.exports = {
     addUserToDatabase,
     getUserFromDatabase,
@@ -290,5 +356,6 @@ module.exports = {
     logoutUserFromApp,
     verifyEmailInDatabase,
     resetPasswordInDatabase,
-    checkEmailFound
+    checkEmailFound,
+    createUserInDatabase
 };

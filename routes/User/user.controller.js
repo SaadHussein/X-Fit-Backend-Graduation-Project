@@ -1,4 +1,4 @@
-const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase, resetPasswordInDatabase, checkEmailFound } = require('../../models/User/user.model');
+const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase, resetPasswordInDatabase, checkEmailFound, createUserInDatabase } = require('../../models/User/user.model');
 const { generateToken, getTransport, getMailOptionsForForgetPassword } = require("../../helpers/emailService");
 
 
@@ -166,6 +166,17 @@ async function resetPassword(req, res) {
     }
 }
 
+async function createUser(req, res) {
+    const data = req.body;
+    const result = await createUserInDatabase(data, req);
+
+    if (result.message === 'Register Successfully, We send Mail to your Email to verify your Account.' && result.status === true) {
+        return res.status(201).json(result);
+    } else {
+        return res.status(400).json(result);
+    }
+}
+
 module.exports = {
     HelloUser,
     addUser,
@@ -175,5 +186,6 @@ module.exports = {
     logoutUser,
     verifyEmail,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    createUser
 };
