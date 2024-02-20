@@ -348,6 +348,75 @@ async function createUserInDatabase(userData, req) {
     }
 }
 
+async function completeUserDataInDatabase(profileData) {
+    try {
+        if (!profileData.email || profileData.email === '' || profileData.id === '' || !profileData.id || !profileData.age || !profileData.gender || profileData.gender === '' || !profileData.weight || !profileData.height || !profileData.goal || profileData.goal === '' || !profileData.experience || profileData.experience === '' || !profileData.bodyFatPercentage || !profileData.muscleMass || !profileData.workoutDurationPreference || profileData.workoutDurationPreference === '' || !profileData.workoutFrequencyPreference || profileData.workoutFrequencyPreference === '' || !profileData.preferredExerciseTypes || profileData.preferredExerciseTypes === '' || !profileData.trainingEnvironmentPreference || profileData.trainingEnvironmentPreference === '' || !profileData.accessToEquipment || profileData.accessToEquipment === '' || !profileData.motivationLevel || profileData.motivationLevel === '' || !profileData.stressLevels) {
+            return {
+                status: false,
+                message: "Some Fields Required.!"
+            };
+        } else {
+            const isUserFound = await usersDatabase.findById(profileData.id);
+
+            if (!isUserFound) {
+                return {
+                    message: "User Not Found, Register First.",
+                    status: false
+                };
+            }
+
+            const updatedUser = await usersDatabase.findByIdAndUpdate(profileData.id,
+                {
+                    age: profileData.age,
+                    gender: profileData.gender,
+                    weight: profileData.weight,
+                    height: profileData.height,
+                    goal: profileData.goal,
+                    experience: profileData.experience,
+                    bodyFatPercentage: profileData.bodyFatPercentage,
+                    muscleMass: profileData.muscleMass,
+                    workoutDurationPreference: profileData.workoutDurationPreference,
+                    workoutFrequencyPreference: profileData.workoutFrequencyPreference,
+                    preferredExerciseTypes: profileData.preferredExerciseTypes,
+                    trainingEnvironmentPreference: profileData.trainingEnvironmentPreference,
+                    accessToEquipment: profileData.accessToEquipment,
+                    motivationLevel: profileData.motivationLevel,
+                    stressLevels: profileData.stressLevels,
+                },
+                { new: true });
+
+            return {
+                message: "User Updated Successfully.",
+                status: true,
+                userData: {
+                    age: updatedUser.age,
+                    gender: updatedUser.gender,
+                    weight: updatedUser.weight,
+                    height: updatedUser.height,
+                    token: updatedUser.authentication.token,
+                    goal: updatedUser.goal,
+                    experience: updatedUser.experience,
+                    bodyFatPercentage: updatedUser.bodyFatPercentage,
+                    muscleMass: updatedUser.muscleMass,
+                    workoutDurationPreference: updatedUser.workoutDurationPreference,
+                    workoutFrequencyPreference: updatedUser.workoutFrequencyPreference,
+                    preferredExerciseTypes: updatedUser.preferredExerciseTypes,
+                    trainingEnvironmentPreference: updatedUser.trainingEnvironmentPreference,
+                    accessToEquipment: updatedUser.accessToEquipment,
+                    motivationLevel: updatedUser.motivationLevel,
+                    stressLevels: updatedUser.stressLevels
+                }
+            };
+        }
+    } catch (err) {
+        return {
+            message: "Error Happened.",
+            status: false,
+            error: err
+        };
+    }
+}
+
 module.exports = {
     addUserToDatabase,
     getUserFromDatabase,
@@ -357,5 +426,6 @@ module.exports = {
     verifyEmailInDatabase,
     resetPasswordInDatabase,
     checkEmailFound,
-    createUserInDatabase
+    createUserInDatabase,
+    completeUserDataInDatabase
 };
