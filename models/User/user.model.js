@@ -91,7 +91,7 @@ async function registerUserToDatabase(userData, req) {
             await newUser.save();
 
             const tokenForVerify = generateToken(userData.email);
-            const link = `https://x-fit-backend-graduation-project.vercel.app/api/v1/user/verifyEmail/${tokenForVerify}`;
+            const link = `${req.protocol}://${req.get('host')}/api/v1/user/verifyEmail/${tokenForVerify}`;
             console.log(link);
             let mailRequest = getMailOptions(userData.email, link);
 
