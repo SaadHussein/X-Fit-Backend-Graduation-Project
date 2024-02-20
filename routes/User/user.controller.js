@@ -93,6 +93,8 @@ async function loginUser(req, res) {
         return res.status(400).json({
             message: "User Not Found...Please Register First."
         });
+    } else if (response.message === 'Error Happened.' && response.status === false) {
+        return res.status(400).json(response);
     } else {
         return res.status(200).json({
             message: "Login Success.",
@@ -109,6 +111,8 @@ async function logoutUser(req, res) {
         return res.status(200).json({
             message: "User LoggedOut Successfully."
         });
+    } else if (response.message === 'Error Happened.' && response.status === false) {
+        return res.status(400).json(response);
     } else {
         return res.status(400).json({
             message: "User LoggedOut Failed."

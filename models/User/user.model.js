@@ -117,6 +117,7 @@ async function registerUserToDatabase(userData, req) {
     } catch (err) {
         return {
             message: "Error Happened.",
+            error: err,
             status: false
         };
     }
@@ -161,54 +162,70 @@ async function verifyEmailInDatabase(token) {
 }
 
 async function loginUserToDatabase(userData) {
-    if (!userData.email || !userData.password) {
-        return {
-            success: false,
-            message: "Fields Required.!"
-        };
-    } else {
-        const isUserFound = await usersDatabase.findOne({ email: userData.email });
-
-        if (!isUserFound) {
+    try {
+        if (!userData.email || !userData.password) {
             return {
                 success: false,
-                message: "not found"
+                message: "Fields Required.!"
             };
-        }
+        } else {
+            const isUserFound = await usersDatabase.findOne({ email: userData.email });
 
-        const isPasswordMatch = await bcrypt.compare(userData.password, isUserFound.authentication.password);
+            if (!isUserFound) {
+                return {
+                    success: false,
+                    message: "not found"
+                };
+            }
 
-        if (!isPasswordMatch) {
+            const isPasswordMatch = await bcrypt.compare(userData.password, isUserFound.authentication.password);
+
+            if (!isPasswordMatch) {
+                return {
+                    success: false,
+                    message: "wrong password"
+                };
+            }
+
+            const token = jwt.sign({ userID: isUserFound._id.toString(), name: isUserFound.name, date: new Date().toString() }, process.env.JWT_SECRET_KEY);
+
+            isUserFound.authentication.token = token;
+            await isUserFound.save();
+
             return {
-                success: false,
-                message: "wrong password"
+                name: isUserFound.name,
+                id: isUserFound._id.toString(),
+                email: isUserFound.email,
+                token: isUserFound.authentication.token,
+                signedWith: isUserFound.signedWith
             };
         }
-
-        const token = jwt.sign({ userID: isUserFound._id.toString(), name: isUserFound.name, date: new Date().toString() }, process.env.JWT_SECRET_KEY);
-
-        isUserFound.authentication.token = token;
-        await isUserFound.save();
-
+    } catch (err) {
         return {
-            name: isUserFound.name,
-            id: isUserFound._id.toString(),
-            email: isUserFound.email,
-            token: isUserFound.authentication.token,
-            signedWith: isUserFound.signedWith
+            message: "Error Happened.",
+            error: err,
+            status: false
         };
     }
 }
 
 async function logoutUserFromApp(userId) {
-    const loggedUser = await usersDatabase.findById(userId);
+    try {
+        const loggedUser = await usersDatabase.findById(userId);
 
-    loggedUser.authentication.token = '';
-    await loggedUser.save();
+        loggedUser.authentication.token = '';
+        await loggedUser.save();
 
-    return {
-        message: "loggedOut"
-    };
+        return {
+            message: "loggedOut"
+        };
+    } catch (err) {
+        return {
+            message: 'Error Happened.',
+            error: err,
+            status: false
+        };
+    }
 }
 
 async function checkEmailFound(email) {
