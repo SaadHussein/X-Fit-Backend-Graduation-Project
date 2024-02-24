@@ -84,7 +84,7 @@ async function registerUserToDatabase(userData, req) {
 
             const newUser = new usersDatabase(updatedUser);
 
-            const token = jwt.sign({ userID: newUser._id.toString(), name: newUser.name }, process.env.JWT_SECRET_KEY);
+            const token = jwt.sign({ userID: newUser._id.toString(), name: newUser.name, Date: Date.now() }, process.env.JWT_SECRET_KEY);
 
             newUser.authentication.token = token;
 
