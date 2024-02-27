@@ -39,8 +39,8 @@ GoogleUserRouter.get('/auth/google', passport.authenticate('google', {
 }));
 
 GoogleUserRouter.get('/auth/google/callback', passport.authenticate('google', {
-    failureRedirect: '/failer',
-    successRedirect: '/signed',
+    failureRedirect: '/',
+    successRedirect: '/',
     session: true,
 }), (req, res) => {
     console.log('Google Called Us Back');
