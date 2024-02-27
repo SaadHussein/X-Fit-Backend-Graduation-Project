@@ -16,7 +16,7 @@ const config = {
 const AuthOptions = {
     clientID: config.ClientID,
     clientSecret: config.ClientSecret,
-    callbackURL: "http://localhost:3000/api/v1/googleUser/auth/google/callback"
+    callbackURL: process.env.ENVIRONMENT === 'DEVELOPMENT' ? "http://localhost:3000/api/v1/googleUser/auth/google/callback" : "https://x-fit-backend-graduation-project.onrender.com/api/v1/googleUser/auth/google/callback"
 };
 
 async function verifyCallback(accessToken, refreshToken, profile, done) {

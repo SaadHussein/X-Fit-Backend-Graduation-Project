@@ -20,26 +20,11 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/api/v1', api);
-app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-app.get('/signed', (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "Signed.html"));
-});
-
-app.get('/failer', (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "Failer.html"));
-});
-
-app.get('/checked', checkedLoggedIn, (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "CheckLoggedIn.html"));
-});
-
-app.get('/forgetPassword/:token', (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "ForgetPassword.html"));
+    res.status(200).json({
+        message: "Welcome To X-Fit"
+    });
 });
 
 module.exports = app;
