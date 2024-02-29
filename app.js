@@ -28,7 +28,6 @@ app.use(passport.session());
 app.use('/api/v1', api);
 
 app.get('/', (req, res) => {
-    throw new Error('HI ERROR');
     res.status(200).send(`<h1>Welcome To X-Fit</h1>`);
 });
 
