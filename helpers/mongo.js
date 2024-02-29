@@ -12,12 +12,22 @@ mongoose.connection.on('error', (err) => {
 });
 
 async function mongoConnect() {
-    console.log('Working on Connection');
-    await mongoose.connect(MONGO_URL);
+    try {
+        console.log('Working on Connection');
+        await mongoose.connect(MONGO_URL);
+    } catch (err) {
+        console.log(err);
+        console.log('Error Happened When Trying To Connect To DB.');
+    }
 }
 
 async function mongoDisconnect() {
-    await mongoose.disconnect();
+    try {
+        await mongoose.disconnect();
+    } catch (err) {
+        console.log(err);
+        console.log('Error Happened When Trying To Disconnect To DB.');
+    }
 }
 
 module.exports = {
