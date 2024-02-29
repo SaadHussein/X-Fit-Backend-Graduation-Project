@@ -1,3 +1,6 @@
+require('express-async-errors');
+require('dotenv').config();
+
 const xss = require('xss-clean');
 const express = require('express');
 const cors = require('cors');
@@ -9,7 +12,7 @@ const api = require('./routes/api');
 const passport = require('passport');
 const checkedLoggedIn = require('./middleware/checkLoggedIn');
 const notFound = require('./middleware/not-found');
-require('dotenv').config();
+const errorHandlerMiddleware = require('./middleware/error-handler');
 
 app.use(express.json());
 app.use(helmet());
@@ -25,9 +28,11 @@ app.use(passport.session());
 app.use('/api/v1', api);
 
 app.get('/', (req, res) => {
+    throw new Error('HI ERROR');
     res.status(200).send(`<h1>Welcome To X-Fit</h1>`);
 });
 
 app.use(notFound);
+app.use(errorHandlerMiddleware);
 
 module.exports = app;
