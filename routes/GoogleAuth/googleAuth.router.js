@@ -3,7 +3,8 @@ const GoogleUserRouter = express.Router();
 const passport = require('passport');
 const { Strategy } = require('passport-google-oauth20');
 const checkedLoggedIn = require('../../middleware/checkLoggedIn');
-const { signWithGoogleAccount, completeRegister, logoutAccountWithGoogle } = require('./googleAuth.controller');
+const { signWithGoogleAccount, completeRegister, logoutAccountWithGoogle, createUserwhenIntegrateWithFlutter } = require('./googleAuth.controller');
+const { StatusCodes } = require('http-status-codes');
 require('dotenv').config();
 
 const config = {
@@ -39,15 +40,19 @@ GoogleUserRouter.get('/auth/google', passport.authenticate('google', {
 }));
 
 GoogleUserRouter.get('/auth/google/callback', passport.authenticate('google', {
-    failureRedirect: '/',
-    successRedirect: '/',
+    failureRedirect: "/",
+    successRedirect: "/",
     session: true,
 }), (req, res) => {
     console.log('Google Called Us Back');
+    console.log(req.user);
+    res.status(StatusCodes.OK).json(req.user);
 });
 
 GoogleUserRouter.get('/auth/logout/:id', checkedLoggedIn, logoutAccountWithGoogle);
 
 GoogleUserRouter.post('/completeRegister', completeRegister);
+
+GoogleUserRouter.post('/createUser', createUserwhenIntegrateWithFlutter);
 
 module.exports = GoogleUserRouter;

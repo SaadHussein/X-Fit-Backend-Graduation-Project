@@ -1,3 +1,5 @@
+const { StatusCodes } = require('http-status-codes');
+const { BadRequestError } = require('../../errors');
 const { signWithGoogleAccountInDatabase, completeRegisterInDatabase, logoutAccountWithGoogleFromDatabase } = require('../../models/User/googleUser.model');
 require('dotenv').config();
 
@@ -9,7 +11,6 @@ async function signWithGoogleAccount(profile) {
     };
 
     const response = await signWithGoogleAccountInDatabase(data);
-    console.log(response);
 
     return response;
 }
@@ -37,8 +38,25 @@ async function logoutAccountWithGoogle(req, res) {
     }
 }
 
+async function createUserwhenIntegrateWithFlutter(req, res) {
+    const { body: { email, name } } = req;
+
+    if (!email || !name) {
+        throw new BadRequestError('Email and Name Must Be Provided');
+    }
+
+    const response = await signWithGoogleAccountInDatabase({ email, name, password: process.env.GOOGLE_PASSWORD });
+
+    if (response.message === "Logged In Successfully" || response.message === "User Created Successfully with Google, Please Complete Another Data.") {
+        return res.status(StatusCodes.OK).json({ response });
+    } else {
+        throw new BadRequestError('Error Happened When Trying To Do it With Google.');
+    }
+}
+
 module.exports = {
     signWithGoogleAccount,
     completeRegister,
-    logoutAccountWithGoogle
+    logoutAccountWithGoogle,
+    createUserwhenIntegrateWithFlutter
 };

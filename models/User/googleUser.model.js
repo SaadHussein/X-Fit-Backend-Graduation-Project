@@ -41,7 +41,7 @@ async function signWithGoogleAccountInDatabase(profileData) {
                 await newUser.save();
 
                 return {
-                    message: "User Created Successfully with Google",
+                    message: "User Created Successfully with Google, Please Complete Another Data.",
                     userData: newUser,
                 };
             }
@@ -80,7 +80,7 @@ async function completeRegisterInDatabase(profileData) {
                     motivationLevel: profileData.motivationLevel,
                     stressLevels: profileData.stressLevels
                 }
-            }, { new: true });
+            }, { new: true, runValidators: true });
 
             return {
                 message: 'Updated Successfully',
