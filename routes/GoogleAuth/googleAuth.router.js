@@ -5,6 +5,7 @@ const { Strategy } = require('passport-google-oauth20');
 const checkedLoggedIn = require('../../middleware/checkLoggedIn');
 const { signWithGoogleAccount, completeRegister, logoutAccountWithGoogle, createUserwhenIntegrateWithFlutter } = require('./googleAuth.controller');
 const { StatusCodes } = require('http-status-codes');
+const { NotFoundError, BadRequestError } = require('../../errors');
 require('dotenv').config();
 
 const config = {
@@ -35,18 +36,32 @@ passport.deserializeUser((user, done) => {
     done(null, user);
 });
 
+GoogleUserRouter.get('/login/success', (req, res) => {
+    if (req.user) {
+        res.status(StatusCodes.OK).json({
+            user: req.user,
+            message: "User Returned."
+        });
+    } else {
+        throw new NotFoundError('User Not Found, Try To Login or Register');
+    }
+});
+
+GoogleUserRouter.get('/login/fail', (req, res) => {
+    throw new BadRequestError('Failed To Login, Try Again Later.');
+});
+
 GoogleUserRouter.get('/auth/google', passport.authenticate('google', {
     scope: ['email', 'profile']
 }));
 
 GoogleUserRouter.get('/auth/google/callback', passport.authenticate('google', {
-    failureRedirect: "/",
+    failureRedirect: "/login/fail",
     successRedirect: "/",
     session: true,
 }), (req, res) => {
     console.log('Google Called Us Back');
     console.log(req.user);
-    res.status(StatusCodes.OK).json(req.user);
 });
 
 GoogleUserRouter.get('/auth/logout/:id', checkedLoggedIn, logoutAccountWithGoogle);
