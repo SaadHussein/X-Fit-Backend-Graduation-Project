@@ -1,5 +1,6 @@
 const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase, resetPasswordInDatabase, checkEmailFound, createUserInDatabase, completeUserDataInDatabase } = require('../../models/User/user.model');
 const { generateToken, getTransport, getMailOptionsForForgetPassword } = require("../../helpers/emailService");
+const catchAsync = require('../../middleware/catchAsync');
 
 
 function HelloUser(req, res) {
@@ -25,7 +26,7 @@ async function getUser(req, res) {
 
 }
 
-async function addUser(req, res) {
+async function addUser(req, res, next) {
     const userData = req.body;
     const addData = await addUserToDatabase(userData);
     console.log(addData);
@@ -44,9 +45,9 @@ async function addUser(req, res) {
             message: "Add User Failed..!"
         });
     }
-}
+};
 
-async function registerUser(req, res) {
+catchAsync(async function registerUser(req, res, next) {
     const userData = req.body;
     const response = await registerUserToDatabase(userData, req);
     if (response.success === false && response.message === "Some Fields Required.!") {
@@ -69,9 +70,9 @@ async function registerUser(req, res) {
             user: response
         });
     }
-}
+});
 
-async function verifyEmail(req, res) {
+catchAsync(async function verifyEmail(req, res, next) {
     const token = req.params.token;
     const response = await verifyEmailInDatabase(token);
 
@@ -80,9 +81,9 @@ async function verifyEmail(req, res) {
     } else {
         return res.status(400).json(response);
     }
-}
+});
 
-async function loginUser(req, res) {
+catchAsync(async function loginUser(req, res) {
     const userData = req.body;
     const response = await loginUserToDatabase(userData);
     if (response.success === false && response.message === "Fields Required.!") {
@@ -101,9 +102,9 @@ async function loginUser(req, res) {
             user: response
         });
     }
-}
+});
 
-async function logoutUser(req, res) {
+catchAsync(async function logoutUser(req, res) {
     const id = req.body.id;
     const response = await logoutUserFromApp(id);
 
@@ -118,9 +119,9 @@ async function logoutUser(req, res) {
             message: "User LoggedOut Failed."
         });
     }
-}
+});
 
-async function forgetPassword(req, res) {
+catchAsync(async function forgetPassword(req, res) {
     const email = req.body.email;
     const response = await checkEmailFound(email);
 
@@ -143,9 +144,9 @@ async function forgetPassword(req, res) {
             message: "Email Not Found."
         });
     }
-}
+});
 
-async function resetPassword(req, res) {
+catchAsync(async function resetPassword(req, res) {
     const data = req.body;
     const token = req.params.token;
 
@@ -164,9 +165,9 @@ async function resetPassword(req, res) {
     } else {
         return res.status(400).json(response);
     }
-}
+});
 
-async function createUser(req, res) {
+catchAsync(async function createUser(req, res) {
     const data = req.body;
     const result = await createUserInDatabase(data, req);
 
@@ -175,9 +176,9 @@ async function createUser(req, res) {
     } else {
         return res.status(400).json(result);
     }
-}
+});
 
-async function completeUserData(req, res) {
+catchAsync(async function completeUserData(req, res) {
     const data = req.body;
     const result = await completeUserDataInDatabase(data);
 
@@ -186,7 +187,7 @@ async function completeUserData(req, res) {
     } else {
         return res.status(400).json(result);
     }
-}
+});
 
 module.exports = {
     HelloUser,

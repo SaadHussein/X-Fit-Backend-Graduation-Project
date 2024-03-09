@@ -1,21 +1,27 @@
 const { StatusCodes } = require('http-status-codes');
 const { BadRequestError } = require('../../errors');
 const { signWithGoogleAccountInDatabase, completeRegisterInDatabase, logoutAccountWithGoogleFromDatabase } = require('../../models/User/googleUser.model');
+const catchAsync = require('../../middleware/catchAsync');
 require('dotenv').config();
 
 async function signWithGoogleAccount(profile) {
-    const data = {
-        name: profile._json.name,
-        email: profile._json.email,
-        password: process.env.GOOGLE_PASSWORD
-    };
+    try {
 
-    const response = await signWithGoogleAccountInDatabase(data);
+        const data = {
+            name: profile._json.name,
+            email: profile._json.email,
+            password: process.env.GOOGLE_PASSWORD
+        };
 
-    return response;
+        const response = await signWithGoogleAccountInDatabase(data);
+
+        return response;
+    } catch (err) {
+        throw new BadRequestError('Error Happened When Try Sign With Google');
+    }
 }
 
-async function completeRegister(req, res) {
+catchAsync(async function completeRegister(req, res, next) {
     const data = req.body;
     const response = await completeRegisterInDatabase(data);
 
@@ -24,9 +30,9 @@ async function completeRegister(req, res) {
     } else {
         return res.status(400).json(response);
     }
-}
+});
 
-async function logoutAccountWithGoogle(req, res) {
+catchAsync(async function logoutAccountWithGoogle(req, res, next) {
     req.logout();
     const id = req.params.id;
     const response = await logoutAccountWithGoogleFromDatabase(id);
@@ -36,9 +42,9 @@ async function logoutAccountWithGoogle(req, res) {
     } else {
         return res.status(400).json(response);
     }
-}
+});
 
-async function createUserwhenIntegrateWithFlutter(req, res) {
+catchAsync(async function createUserwhenIntegrateWithFlutter(req, res, next) {
     const { body: { email, name } } = req;
 
     if (!email || !name) {
@@ -52,7 +58,7 @@ async function createUserwhenIntegrateWithFlutter(req, res) {
     } else {
         throw new BadRequestError('Error Happened When Trying To Do it With Google.');
     }
-}
+});
 
 module.exports = {
     signWithGoogleAccount,

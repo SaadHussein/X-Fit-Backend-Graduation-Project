@@ -1,6 +1,7 @@
 const { createCircleInDatabase, addMemberToCircleInDatabase, getCircleById, removeCircleFromDatabase, removeMemberFromCircle, memberLeaveFromCircle, editCircleDataInDatabase } = require('../../models/Circle/circle.model');
+const catchAsync = require('../../middleware/catchAsync');
 
-async function createCircle(req, res) {
+catchAsync(async function createCircle(req, res, next) {
     const data = req.body;
 
     if (data.name === '' || !data.name || data.adminID === '' || !data.adminID) {
@@ -17,9 +18,9 @@ async function createCircle(req, res) {
         return res.status(404).json(result);
     }
 
-}
+});
 
-async function addMemberToCircle(req, res) {
+catchAsync(async function addMemberToCircle(req, res) {
     const data = req.body;
 
     if (!data.memberID || data.memberID === "" || !data.circleID || data.circleID === "") {
@@ -35,9 +36,9 @@ async function addMemberToCircle(req, res) {
     } else {
         return res.status(404).json(result);
     }
-}
+});
 
-async function getCircle(req, res) {
+catchAsync(async function getCircle(req, res) {
     const data = req.body;
 
     if (data.id === "" || !data.id) {
@@ -53,9 +54,9 @@ async function getCircle(req, res) {
     } else {
         return res.status(404).json(result);
     }
-}
+});
 
-async function deleteCircle(req, res) {
+catchAsync(async function deleteCircle(req, res) {
     const data = req.body;
 
     if (data.circleID === "" || !data.circleID || data.adminID === "" || !data.adminID) {
@@ -71,9 +72,9 @@ async function deleteCircle(req, res) {
     } else {
         return res.status(400).json(result);
     }
-}
+});
 
-async function removeMember(req, res) {
+catchAsync(async function removeMember(req, res) {
     const data = req.body;
 
     if (data.adminID === "" || data.memberID === "" || data.circleID === "" || !data.memberID || !data.circleID || !data.adminID) {
@@ -89,9 +90,9 @@ async function removeMember(req, res) {
     } else {
         return res.status(400).json(result);
     }
-}
+});
 
-async function memberLeave(req, res) {
+catchAsync(async function memberLeave(req, res) {
     const data = req.body;
 
     if (data.memberID === "" || data.circleID === "" || !data.memberID || !data.circleID) {
@@ -107,9 +108,9 @@ async function memberLeave(req, res) {
     } else {
         return res.status(400).json(result);
     }
-}
+});
 
-async function updateCircle(req, res) {
+catchAsync(async function updateCircle(req, res) {
     const data = req.body;
 
     if (!data.name || data.name === "" || data.circleID === "" || !data.circleID || data.userID === "" || !data.userID) {
@@ -125,7 +126,7 @@ async function updateCircle(req, res) {
     } else {
         return res.status(400).json(result);
     }
-}
+});
 
 module.exports = {
     createCircle,
