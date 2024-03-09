@@ -72,7 +72,7 @@ const registerUser = catchAsync(async (req, res, next) => {
     }
 });
 
-catchAsync(async function verifyEmail(req, res, next) {
+const verifyEmail = catchAsync(async (req, res, next) => {
     const token = req.params.token;
     const response = await verifyEmailInDatabase(token);
 
@@ -83,7 +83,7 @@ catchAsync(async function verifyEmail(req, res, next) {
     }
 });
 
-catchAsync(async function loginUser(req, res) {
+const loginUser = catchAsync(async (req, res, next) => {
     const userData = req.body;
     const response = await loginUserToDatabase(userData);
     if (response.success === false && response.message === "Fields Required.!") {
@@ -104,7 +104,7 @@ catchAsync(async function loginUser(req, res) {
     }
 });
 
-catchAsync(async function logoutUser(req, res) {
+const logoutUser = catchAsync(async (req, res, next) => {
     const id = req.body.id;
     const response = await logoutUserFromApp(id);
 
@@ -121,7 +121,7 @@ catchAsync(async function logoutUser(req, res) {
     }
 });
 
-catchAsync(async function forgetPassword(req, res) {
+const forgetPassword = catchAsync(async (req, res, next) => {
     const email = req.body.email;
     const response = await checkEmailFound(email);
 
@@ -146,7 +146,7 @@ catchAsync(async function forgetPassword(req, res) {
     }
 });
 
-catchAsync(async function resetPassword(req, res) {
+const resetPassword = catchAsync(async (req, res, next) => {
     const data = req.body;
     const token = req.params.token;
 
@@ -167,7 +167,7 @@ catchAsync(async function resetPassword(req, res) {
     }
 });
 
-catchAsync(async function createUser(req, res) {
+const createUser = catchAsync(async (req, res, next) => {
     const data = req.body;
     const result = await createUserInDatabase(data, req);
 
@@ -178,7 +178,7 @@ catchAsync(async function createUser(req, res) {
     }
 });
 
-catchAsync(async function completeUserData(req, res) {
+const completeUserData = catchAsync(async (req, res, next) => {
     const data = req.body;
     const result = await completeUserDataInDatabase(data);
 

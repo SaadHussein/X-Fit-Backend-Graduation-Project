@@ -1,7 +1,7 @@
 const { createCircleInDatabase, addMemberToCircleInDatabase, getCircleById, removeCircleFromDatabase, removeMemberFromCircle, memberLeaveFromCircle, editCircleDataInDatabase } = require('../../models/Circle/circle.model');
 const catchAsync = require('../../middleware/catchAsync');
 
-catchAsync(async function createCircle(req, res, next) {
+const createCircle = catchAsync(async (req, res, next) => {
     const data = req.body;
 
     if (data.name === '' || !data.name || data.adminID === '' || !data.adminID) {
@@ -20,7 +20,7 @@ catchAsync(async function createCircle(req, res, next) {
 
 });
 
-catchAsync(async function addMemberToCircle(req, res) {
+const addMemberToCircle = catchAsync(async (req, res, next) => {
     const data = req.body;
 
     if (!data.memberID || data.memberID === "" || !data.circleID || data.circleID === "") {
@@ -38,7 +38,7 @@ catchAsync(async function addMemberToCircle(req, res) {
     }
 });
 
-catchAsync(async function getCircle(req, res) {
+const getCircle = catchAsync(async (req, res, next) => {
     const data = req.body;
 
     if (data.id === "" || !data.id) {
@@ -56,7 +56,7 @@ catchAsync(async function getCircle(req, res) {
     }
 });
 
-catchAsync(async function deleteCircle(req, res) {
+const deleteCircle = catchAsync(async (req, res, next) => {
     const data = req.body;
 
     if (data.circleID === "" || !data.circleID || data.adminID === "" || !data.adminID) {
@@ -74,7 +74,7 @@ catchAsync(async function deleteCircle(req, res) {
     }
 });
 
-catchAsync(async function removeMember(req, res) {
+const removeMember = catchAsync(async (req, res, next) => {
     const data = req.body;
 
     if (data.adminID === "" || data.memberID === "" || data.circleID === "" || !data.memberID || !data.circleID || !data.adminID) {
@@ -92,7 +92,7 @@ catchAsync(async function removeMember(req, res) {
     }
 });
 
-catchAsync(async function memberLeave(req, res) {
+const memberLeave = catchAsync(async (req, res, next) => {
     const data = req.body;
 
     if (data.memberID === "" || data.circleID === "" || !data.memberID || !data.circleID) {
@@ -110,7 +110,7 @@ catchAsync(async function memberLeave(req, res) {
     }
 });
 
-catchAsync(async function updateCircle(req, res) {
+const updateCircle = catchAsync(async (req, res, next) => {
     const data = req.body;
 
     if (!data.name || data.name === "" || data.circleID === "" || !data.circleID || data.userID === "" || !data.userID) {

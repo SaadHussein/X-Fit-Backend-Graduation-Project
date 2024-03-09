@@ -21,7 +21,7 @@ async function signWithGoogleAccount(profile) {
     }
 }
 
-catchAsync(async function completeRegister(req, res, next) {
+const completeRegister = catchAsync(async (req, res, next) => {
     const data = req.body;
     const response = await completeRegisterInDatabase(data);
 
@@ -32,7 +32,7 @@ catchAsync(async function completeRegister(req, res, next) {
     }
 });
 
-catchAsync(async function logoutAccountWithGoogle(req, res, next) {
+const logoutAccountWithGoogle = catchAsync(async (req, res, next) => {
     req.logout();
     const id = req.params.id;
     const response = await logoutAccountWithGoogleFromDatabase(id);
@@ -44,7 +44,7 @@ catchAsync(async function logoutAccountWithGoogle(req, res, next) {
     }
 });
 
-catchAsync(async function createUserwhenIntegrateWithFlutter(req, res, next) {
+const createUserwhenIntegrateWithFlutter = catchAsync(async (req, res, next) => {
     const { body: { email, name } } = req;
 
     if (!email || !name) {
