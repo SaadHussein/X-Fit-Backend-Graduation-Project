@@ -47,7 +47,7 @@ async function addUser(req, res, next) {
     }
 };
 
-catchAsync(async function registerUser(req, res, next) {
+const registerUser = catchAsync(async (req, res, next) => {
     const userData = req.body;
     const response = await registerUserToDatabase(userData, req);
     if (response.success === false && response.message === "Some Fields Required.!") {
