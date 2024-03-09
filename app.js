@@ -15,6 +15,7 @@ const checkedLoggedIn = require('./middleware/checkLoggedIn');
 const notFound = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
 
+
 app.use(express.json());
 app.use(helmet());
 app.use(cors());
