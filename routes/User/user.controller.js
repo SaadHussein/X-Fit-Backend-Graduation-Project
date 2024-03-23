@@ -65,6 +65,10 @@ const registerUser = catchAsync(async (req, res, next) => {
             message: "Register Failed Try Again Later."
         });
     } else {
+        res.cookie('xfit', response.token, {
+            expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+            httpOnly: true
+        });
         return res.status(200).json({
             message: "Register Success, Please Verify Your Account From The Mail We Send To Your Email.",
             user: response
@@ -96,7 +100,13 @@ const loginUser = catchAsync(async (req, res, next) => {
         });
     } else if (response.message === 'Error Happened.' && response.status === false) {
         return res.status(400).json(response);
+    } else if (response.message === "wrong password" && response.success === false) {
+        return res.status(400).json(response);
     } else {
+        res.cookie('xfit', response.token, {
+            expires: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+            httpOnly: true
+        });
         return res.status(200).json({
             message: "Login Success.",
             user: response

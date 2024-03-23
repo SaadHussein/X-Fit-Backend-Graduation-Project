@@ -1,6 +1,7 @@
 require('express-async-errors');
 require('dotenv').config();
 
+const cookieParser = require('cookie-parser');
 const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const express = require('express');
@@ -17,6 +18,7 @@ const errorHandlerMiddleware = require('./middleware/error-handler');
 
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(helmet());
 app.use(cors());
 app.use(mongoSanitize());
