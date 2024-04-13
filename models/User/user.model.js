@@ -417,6 +417,30 @@ async function completeUserDataInDatabase(profileData) {
     }
 }
 
+async function getUserEventsFromDatabase(userID) {
+    try {
+        const selectedUser = await usersDatabase.findById(userID).populate('eventsJoined');
+
+        if (!selectedUser) {
+            return {
+                status: "fail",
+                message: "User Not Found with This ID"
+            };
+        }
+
+        return {
+            status: "success",
+            user: selectedUser
+        };
+    } catch (error) {
+        return {
+            status: "fail",
+            error,
+            message: "Error Happened."
+        };
+    }
+}
+
 module.exports = {
     addUserToDatabase,
     getUserFromDatabase,
@@ -427,5 +451,6 @@ module.exports = {
     resetPasswordInDatabase,
     checkEmailFound,
     createUserInDatabase,
-    completeUserDataInDatabase
+    completeUserDataInDatabase,
+    getUserEventsFromDatabase
 };

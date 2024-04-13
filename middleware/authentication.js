@@ -8,8 +8,6 @@ async function jwtAuthentication(req, res, next) {
     // const authHeader = req.headers.authorization || req.cookies.xfit;
 
     let token;
-    console.log(req.headers.authorization);
-    console.log(req.cookies);
     if (req.headers.authorization !== undefined && (req.headers.authorization || req.headers.authorization.startsWith('Bearer'))) {
         token = req.headers.authorization.split(' ')[1];
     } else if (req.cookies.xfit) {
@@ -29,6 +27,7 @@ async function jwtAuthentication(req, res, next) {
     }
 
     req.user = currentUser;
+    console.log(req.user);
     next();
 
     // if (authHeader) {

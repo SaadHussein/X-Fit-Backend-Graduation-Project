@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Event = require('../Event/event.mongo');
 
 const userSchema = mongoose.Schema({
     name: {
@@ -87,7 +88,13 @@ const userSchema = mongoose.Schema({
     stressLevels: {
         type: Number,
         required: false,
-    }
+    },
+    eventsJoined: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: "Event"
+        }
+    ]
 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.models.User || mongoose.model('User', userSchema);

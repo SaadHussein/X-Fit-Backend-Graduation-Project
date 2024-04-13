@@ -1,6 +1,6 @@
 const express = require('express');
 const userRouter = express.Router();
-const { HelloUser, addUser, getUser, registerUser, loginUser, logoutUser, verifyEmail, forgetPassword, resetPassword, createUser, completeUserData } = require('./user.controller');
+const { HelloUser, addUser, getUser, registerUser, loginUser, logoutUser, verifyEmail, forgetPassword, resetPassword, createUser, completeUserData, getUserEvents } = require('./user.controller');
 const jwtAuthentication = require('../../middleware/authentication');
 
 userRouter.get('/helloUser', HelloUser);
@@ -16,5 +16,7 @@ userRouter.post('/resetPassword/:token', resetPassword);
 
 userRouter.post('/createUser', createUser);
 userRouter.patch('/completeUserData', completeUserData);
+
+userRouter.get('/userEvents', jwtAuthentication, getUserEvents);
 
 module.exports = userRouter;

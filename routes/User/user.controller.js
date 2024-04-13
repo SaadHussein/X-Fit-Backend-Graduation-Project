@@ -1,4 +1,4 @@
-const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase, resetPasswordInDatabase, checkEmailFound, createUserInDatabase, completeUserDataInDatabase } = require('../../models/User/user.model');
+const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase, resetPasswordInDatabase, checkEmailFound, createUserInDatabase, completeUserDataInDatabase, getUserEventsFromDatabase } = require('../../models/User/user.model');
 const { generateToken, getTransport, getMailOptionsForForgetPassword } = require("../../helpers/emailService");
 const catchAsync = require('../../middleware/catchAsync');
 
@@ -199,6 +199,17 @@ const completeUserData = catchAsync(async (req, res, next) => {
     }
 });
 
+const getUserEvents = catchAsync(async (req, res, next) => {
+    const userID = req.user.id;
+    const response = await getUserEventsFromDatabase(userID);
+
+    if (response.status === 'success') {
+        return res.status(200).json(response);
+    } else {
+        return res.status(400).json(response);
+    }
+});
+
 module.exports = {
     HelloUser,
     addUser,
@@ -210,5 +221,6 @@ module.exports = {
     forgetPassword,
     resetPassword,
     createUser,
-    completeUserData
+    completeUserData,
+    getUserEvents
 };
