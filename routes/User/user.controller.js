@@ -1,4 +1,4 @@
-const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase, resetPasswordInDatabase, checkEmailFound, createUserInDatabase, completeUserDataInDatabase, getUserEventsFromDatabase, updateUserAssessmentInDatabase } = require('../../models/User/user.model');
+const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase, resetPasswordInDatabase, checkEmailFound, createUserInDatabase, completeUserDataInDatabase, getUserEventsFromDatabase, updateUserAssessmentInDatabase, CalculateUserLevelInDatabase } = require('../../models/User/user.model');
 const { generateToken, getTransport, getMailOptionsForForgetPassword } = require("../../helpers/emailService");
 const catchAsync = require('../../middleware/catchAsync');
 
@@ -224,6 +224,17 @@ const updateUserAssessment = catchAsync(async (req, res, next) => {
     }
 });
 
+const CalculateUserLevel = catchAsync(async (req, res, next) => {
+    const userID = req.user.id;
+    const response = await CalculateUserLevelInDatabase(userID, req.body);
+
+    if (response.status === 'success') {
+        return res.status(200).json(response);
+    } else {
+        return res.status(400).json(response);
+    }
+});
+
 module.exports = {
     HelloUser,
     addUser,
@@ -237,5 +248,6 @@ module.exports = {
     createUser,
     completeUserData,
     getUserEvents,
-    updateUserAssessment
+    updateUserAssessment,
+    CalculateUserLevel
 };

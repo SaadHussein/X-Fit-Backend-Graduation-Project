@@ -135,6 +135,33 @@ const userSchema = mongoose.Schema({
             type: String
         }
     },
+    ExcersisAssessments: {
+        MaxPushupNumper: {
+            Score: {
+                type: Number
+            }
+        },
+        TwelveMinuteRunDistance: {
+            Score: {
+                type: Number
+            }
+        },
+        SitAndReachDistance: {
+            Score: {
+                type: Number
+            }
+        },
+        VerticalJumpHeight: {
+            Score: {
+                type: Number
+            }
+        },
+        PlankDuration: {
+            Score: {
+                type: Number
+            }
+        },
+    }
 });
 
 module.exports = mongoose.models.User || mongoose.model('User', userSchema);
