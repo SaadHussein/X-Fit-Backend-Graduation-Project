@@ -457,7 +457,7 @@ async function updateUserAssessmentInDatabase(userID, updatedData) {
 
         const updatedUser = usersDatabase.findByIdAndUpdate(userID, updatedData);
 
-        return updatedUser;
+        return { user: updatedUser, status: "success" };
     } catch (error) {
         return {
             status: "fail",
