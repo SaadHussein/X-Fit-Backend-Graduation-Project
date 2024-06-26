@@ -192,13 +192,14 @@ async function loginUserToDatabase(userData) {
             isUserFound.authentication.token = token;
             await isUserFound.save();
 
-            return {
-                name: isUserFound.name,
-                id: isUserFound._id.toString(),
-                email: isUserFound.email,
-                token: isUserFound.authentication.token,
-                signedWith: isUserFound.signedWith
-            };
+            // return {
+            //     name: isUserFound.name,
+            //     id: isUserFound._id.toString(),
+            //     email: isUserFound.email,
+            //     token: isUserFound.authentication.token,
+            //     signedWith: isUserFound.signedWith
+            // };
+            return isUserFound;
         }
     } catch (err) {
         return {
