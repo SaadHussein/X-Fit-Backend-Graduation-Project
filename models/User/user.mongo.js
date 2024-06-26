@@ -94,7 +94,47 @@ const userSchema = mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: "Event"
         }
-    ]
+    ],
+    StrengthAssessment: {
+        Score: {
+            type: Number
+        },
+        Level: {
+            type: String
+        }
+    },
+    EnduranceAssessment: {
+        Score: {
+            type: Number
+        },
+        Level: {
+            type: String
+        }
+    },
+    FlexibilityAssessment: {
+        Score: {
+            type: Number
+        },
+        Level: {
+            type: String
+        }
+    },
+    PowerAssessment: {
+        Score: {
+            type: Number
+        },
+        Level: {
+            type: String
+        }
+    },
+    StabilizationAssessment: {
+        Score: {
+            type: Number
+        },
+        Level: {
+            type: String
+        }
+    },
 });
 
 module.exports = mongoose.models.User || mongoose.model('User', userSchema);

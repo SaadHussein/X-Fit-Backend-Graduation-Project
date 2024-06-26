@@ -442,6 +442,31 @@ async function getUserEventsFromDatabase(userID) {
     }
 }
 
+async function updateUserAssessmentInDatabase(userID, updatedData) {
+    try {
+        const selectedUser = await usersDatabase.findById(userID);
+
+        if (!selectedUser) {
+            return {
+                status: "fail",
+                message: "User Not Found with This ID"
+            };
+        }
+
+        console.log(updatedData);
+
+        const updatedUser = usersDatabase.findByIdAndUpdate(userID, updatedData);
+
+        return updatedUser;
+    } catch (error) {
+        return {
+            status: "fail",
+            error,
+            message: "Error Happened."
+        };
+    }
+}
+
 module.exports = {
     addUserToDatabase,
     getUserFromDatabase,
@@ -453,5 +478,6 @@ module.exports = {
     checkEmailFound,
     createUserInDatabase,
     completeUserDataInDatabase,
-    getUserEventsFromDatabase
+    getUserEventsFromDatabase,
+    updateUserAssessmentInDatabase
 };

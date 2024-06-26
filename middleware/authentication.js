@@ -14,17 +14,24 @@ async function jwtAuthentication(req, res, next) {
         token = req.cookies.xfit;
     }
 
+
     if (!token) {
         throw new UnauthenticatedError('Authentication Credentials are Required...Maybe You Need to Login or Register.');
     }
 
+    console.log(token);
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_KEY);
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+    console.log(decoded);
 
     const currentUser = await User.findById(decoded.userID);
 
     if (!currentUser) {
         throw new NotFoundError('User Not Found, Register First Please.');
     }
+
+    console.log(currentUser);
 
     req.user = currentUser;
     console.log(req.user);
