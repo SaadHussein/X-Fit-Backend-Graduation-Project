@@ -215,6 +215,8 @@ const updateUserAssessment = catchAsync(async (req, res, next) => {
     console.log(userID, req.body);
     const response = await updateUserAssessmentInDatabase(userID, req.body);
 
+    console.log(response);
+
     if (response.status === 'success') {
         return res.status(200).json(response);
     } else {

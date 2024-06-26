@@ -455,7 +455,7 @@ async function updateUserAssessmentInDatabase(userID, updatedData) {
 
         console.log(updatedData);
 
-        const updatedUser = usersDatabase.findByIdAndUpdate(userID, updatedData);
+        const updatedUser = await usersDatabase.findByIdAndUpdate(userID, updatedData);
 
         return { user: updatedUser, status: "success" };
     } catch (error) {
