@@ -1,6 +1,27 @@
 const circleDatabase = require('./circle.mongo');
 const userDatabase = require('../User/user.mongo');
 
+async function getAllCirclesFromDatabase() {
+    try {
+        const circles = await circleDatabase.find({});
+
+        if (!circles) {
+            return {
+                status: "false",
+                message: "No Circles Found",
+            };
+        }
+
+        return circles;
+    } catch (error) {
+        return {
+            status: "false",
+            message: "Something went Wrong.!",
+            error
+        };
+    }
+}
+
 async function createCircleInDatabase(circleData) {
     try {
         const userId = await userDatabase.findById(circleData.adminID);
@@ -267,6 +288,7 @@ async function addUserToCircleWithInvitationLinkToDatabase(circleID, userID) {
 }
 
 module.exports = {
+    getAllCirclesFromDatabase,
     createCircleInDatabase,
     removeCircleFromDatabase,
     addMemberToCircleInDatabase,

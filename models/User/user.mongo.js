@@ -28,10 +28,21 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true
     },
+    phoneNumber: {
+        type: String
+    },
     gender: {
         type: String,
         enum: ['Male', 'Female'],
         required: false,
+    },
+    address: {
+        governorate: {
+            type: String
+        },
+        city: {
+            type: String
+        }
     },
     age: {
         type: Number,
@@ -46,7 +57,7 @@ const userSchema = mongoose.Schema({
         required: false,
     },
     goal: {
-        type: String,
+        type: [String],
         required: false,
     },
     experience: {
@@ -70,11 +81,11 @@ const userSchema = mongoose.Schema({
         required: false,
     },
     preferredExerciseTypes: {
-        type: String,
+        type: [String],
         required: false,
     },
     trainingEnvironmentPreference: {
-        type: String,
+        type: [String],
         required: false,
     },
     accessToEquipment: {
@@ -88,6 +99,9 @@ const userSchema = mongoose.Schema({
     stressLevels: {
         type: Number,
         required: false,
+    },
+    healthIssues: {
+        type: [String]
     },
     eventsJoined: [
         {

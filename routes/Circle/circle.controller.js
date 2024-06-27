@@ -1,5 +1,15 @@
-const { createCircleInDatabase, addMemberToCircleInDatabase, getCircleById, removeCircleFromDatabase, removeMemberFromCircle, memberLeaveFromCircle, editCircleDataInDatabase, addUserToCircleWithInvitationLinkToDatabase } = require('../../models/Circle/circle.model');
+const { getAllCirclesFromDatabase, createCircleInDatabase, addMemberToCircleInDatabase, getCircleById, removeCircleFromDatabase, removeMemberFromCircle, memberLeaveFromCircle, editCircleDataInDatabase, addUserToCircleWithInvitationLinkToDatabase } = require('../../models/Circle/circle.model');
 const catchAsync = require('../../middleware/catchAsync');
+
+const getAllCircles = catchAsync(async (req, res, next) => {
+    const result = await getAllCirclesFromDatabase();
+
+    if (result.status === "success") {
+        return res.status(200).json(result);
+    } else {
+        return res.status(400).json(result);
+    }
+});
 
 const createCircle = catchAsync(async (req, res, next) => {
     const data = req.body;
@@ -141,6 +151,7 @@ const addMemberWithInvitationLink = catchAsync(async (req, res, next) => {
 });
 
 module.exports = {
+    getAllCircles,
     createCircle,
     deleteCircle,
     addMemberToCircle,

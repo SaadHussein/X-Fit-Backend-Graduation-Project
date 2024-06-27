@@ -1,8 +1,9 @@
 const express = require('express');
-const { createCircle, addMemberToCircle, getCircle, deleteCircle, removeMember, memberLeave, updateCircle, addMemberWithInvitationLink } = require('./circle.controller');
+const { getAllCircles, createCircle, addMemberToCircle, getCircle, deleteCircle, removeMember, memberLeave, updateCircle, addMemberWithInvitationLink } = require('./circle.controller');
 const jwtAuthentication = require('../../middleware/authentication');
 const CircleRouter = express.Router();
 
+CircleRouter.get("/all-circles", getAllCircles);
 CircleRouter.post('/', jwtAuthentication, createCircle);
 CircleRouter.post('/addMemberToCircle', jwtAuthentication, addMemberToCircle);
 CircleRouter.post('/getCircle', jwtAuthentication, getCircle);
