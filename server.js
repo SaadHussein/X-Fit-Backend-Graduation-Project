@@ -16,7 +16,9 @@ const PORT = process.env.PORT || 3000;
 
 const server = http.createServer(app);
 const { Server } = require("socket.io");
+const validateToken = require('./middleware/validateToken');
 const io = new Server(server);
+const circleDB = require("./models/Circle/circle.mongo");
 
 async function startServer() {
     try {
@@ -24,6 +26,24 @@ async function startServer() {
 
         io.on("connection", (socket) => {
             console.log("User Connected");
+
+            socket.on("message", async ({ message, token, user, circleID }) => {
+                console.log(message, token, user, circleID);
+
+                const decodedToken = validateToken(token);
+                if (!decodedToken) {
+                    console.log("Invalid Token");
+                    return;
+                }
+
+                const selectedCircle = await circleDB.findById(circleID);
+                selectedCircle.messages.push({
+                    text: message,
+                    senderName: user.name
+                });
+
+                await selectedCircle.save();
+            });
         });
 
         server.listen(PORT, () => {

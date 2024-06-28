@@ -25,7 +25,15 @@ const circleSchema = mongoose.Schema({
     },
     members: {
         type: [memberSchema],
-    }
+    },
+    messages: [{
+        text: {
+            type: String
+        },
+        senderName: {
+            type: String
+        }
+    }]
 });
 
 module.exports = mongoose.models.Circle || mongoose.model('Circle', circleSchema);
