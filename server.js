@@ -46,6 +46,18 @@ async function startServer() {
 
                 socket.emit("messages", { messages: selectedCircle.messages });
             });
+
+            socket.on("getMessages", async ({ token, circleID }) => {
+                const decodedToken = validateToken(token);
+                if (!decodedToken) {
+                    console.log("Invalid Token");
+                    return;
+                }
+
+                const selectedCircle = await circleDB.findById(circleID);
+
+                socket.emit("getMessages", { messages: selectedCircle.messages });
+            });
         });
 
         server.listen(PORT, () => {
