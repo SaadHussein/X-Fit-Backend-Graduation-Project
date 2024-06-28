@@ -43,6 +43,8 @@ async function startServer() {
                 });
 
                 await selectedCircle.save();
+
+                socket.emit("messages", { messages: selectedCircle.messages });
             });
         });
 
