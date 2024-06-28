@@ -150,6 +150,12 @@ const addMemberWithInvitationLink = catchAsync(async (req, res, next) => {
     }
 });
 
+const joinCircle = catchAsync(async (req, res, next) => {
+    const circleID = req.params.circleID;
+
+    res.redirect(`https://graduation-project-frontend-three.vercel.app/join-circle/${circleID}`);
+});
+
 module.exports = {
     getAllCircles,
     createCircle,
@@ -159,5 +165,6 @@ module.exports = {
     removeMember,
     memberLeave,
     updateCircle,
-    addMemberWithInvitationLink
+    addMemberWithInvitationLink,
+    joinCircle
 };
