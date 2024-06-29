@@ -287,6 +287,49 @@ async function addUserToCircleWithInvitationLinkToDatabase(circleID, userID) {
     }
 }
 
+async function memberJoinCircleInDatabase(circleID, userID) {
+    try {
+        const user = await userDatabase.findById(userID);
+        const circle = await circleDatabase.findById(circleID);
+
+        if (!user || !circle) {
+            return {
+                status: "false",
+                message: "User or Circle Not Found"
+            };
+        }
+
+        const isUserAlreadyOnGroup = circle.members.find((memeber) => memeber.memberID === userID);
+
+        if (isUserAlreadyOnGroup) {
+            return {
+                status: "false",
+                message: "User Already on Circle."
+            };
+        }
+
+        circle.members.push({
+            memberName: user.name,
+            memberID: userID
+        });
+
+        await circle.save();
+
+        return {
+            status: "success",
+            message: "User Added To Group Successfully."
+        };
+
+
+    } catch (error) {
+        return {
+            status: "false",
+            error,
+            message: "Something went Wrong.!"
+        };
+    }
+}
+
 module.exports = {
     getAllCirclesFromDatabase,
     createCircleInDatabase,
@@ -296,5 +339,6 @@ module.exports = {
     removeMemberFromCircle,
     editCircleDataInDatabase,
     memberLeaveFromCircle,
-    addUserToCircleWithInvitationLinkToDatabase
+    addUserToCircleWithInvitationLinkToDatabase,
+    memberJoinCircleInDatabase
 };

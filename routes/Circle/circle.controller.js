@@ -1,4 +1,4 @@
-const { getAllCirclesFromDatabase, createCircleInDatabase, addMemberToCircleInDatabase, getCircleById, removeCircleFromDatabase, removeMemberFromCircle, memberLeaveFromCircle, editCircleDataInDatabase, addUserToCircleWithInvitationLinkToDatabase } = require('../../models/Circle/circle.model');
+const { memberJoinCircleInDatabase, getAllCirclesFromDatabase, createCircleInDatabase, addMemberToCircleInDatabase, getCircleById, removeCircleFromDatabase, removeMemberFromCircle, memberLeaveFromCircle, editCircleDataInDatabase, addUserToCircleWithInvitationLinkToDatabase } = require('../../models/Circle/circle.model');
 const catchAsync = require('../../middleware/catchAsync');
 
 const getAllCircles = catchAsync(async (req, res, next) => {
@@ -156,6 +156,19 @@ const joinCircle = catchAsync(async (req, res, next) => {
     res.redirect(`https://graduation-project-frontend-three.vercel.app/join-circle/${circleID}`);
 });
 
+const memberJoinCircle = catchAsync(async (req, res, next) => {
+    const circleID = req.params.circleID;
+    const userID = req.user.id;
+
+    const response = await memberJoinCircleInDatabase(circleID, userID);
+
+    if (response.status === "success") {
+        res.status(200).json(response);
+    } else {
+        res.status(400).json(response);
+    }
+});
+
 module.exports = {
     getAllCircles,
     createCircle,
@@ -166,5 +179,6 @@ module.exports = {
     memberLeave,
     updateCircle,
     addMemberWithInvitationLink,
-    joinCircle
+    joinCircle,
+    memberJoinCircle
 };
