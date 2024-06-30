@@ -6,6 +6,9 @@ const eventSchema = mongoose.Schema({
         type: String,
         required: [true, 'Event must have a name']
     },
+    eventImage: {
+        type: String
+    },
     address: {
         type: String,
         required: [true, "Event must have an address"]
