@@ -1,4 +1,4 @@
-const { addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase, resetPasswordInDatabase, checkEmailFound, createUserInDatabase, completeUserDataInDatabase, getUserEventsFromDatabase, updateUserAssessmentInDatabase, CalculateUserLevelInDatabase } = require('../../models/User/user.model');
+const { addUserPlanInDatabase, addUserToDatabase, getUserFromDatabase, registerUserToDatabase, loginUserToDatabase, logoutUserFromApp, verifyEmailInDatabase, resetPasswordInDatabase, checkEmailFound, createUserInDatabase, completeUserDataInDatabase, getUserEventsFromDatabase, updateUserAssessmentInDatabase, CalculateUserLevelInDatabase } = require('../../models/User/user.model');
 const { generateToken, getTransport, getMailOptionsForForgetPassword } = require("../../helpers/emailService");
 const catchAsync = require('../../middleware/catchAsync');
 
@@ -235,6 +235,18 @@ const CalculateUserLevel = catchAsync(async (req, res, next) => {
     }
 });
 
+const addUserPlan = catchAsync(async (req, res, next) => {
+    const userID = req.user.id;
+    const data = req.body;
+    const response = await addUserPlanInDatabase(userID, data);
+
+    if (response.status === 'success') {
+        return res.status(200).json(response);
+    } else {
+        return res.status(400).json(response);
+    }
+});
+
 module.exports = {
     HelloUser,
     addUser,
@@ -249,5 +261,6 @@ module.exports = {
     completeUserData,
     getUserEvents,
     updateUserAssessment,
-    CalculateUserLevel
+    CalculateUserLevel,
+    addUserPlan
 };

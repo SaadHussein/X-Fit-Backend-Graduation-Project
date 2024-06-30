@@ -175,7 +175,29 @@ const userSchema = mongoose.Schema({
                 type: Number
             }
         },
-    }
+    },
+    plan: [
+        {
+            week: [
+                {
+                    day: {
+                        description: {
+                            type: String
+                        },
+                        numberOfSets: {
+                            type: Number
+                        },
+                        numberOfReps: {
+                            type: Number
+                        },
+                        duration: {
+                            type: Number
+                        },
+                    }
+                }
+            ]
+        }
+    ]
 });
 
 module.exports = mongoose.models.User || mongoose.model('User', userSchema);

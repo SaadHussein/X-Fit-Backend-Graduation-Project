@@ -490,6 +490,29 @@ async function CalculateUserLevelInDatabase(userID, updatedData) {
     }
 }
 
+async function addUserPlanInDatabase(userID, data) {
+    try {
+        const selectedUser = await usersDatabase.findById(userID);
+
+        if (!selectedUser) {
+            return {
+                status: "fail",
+                message: "User Not Found with This ID"
+            };
+        }
+
+        const updatedUser = await usersDatabase.findByIdAndUpdate(userID, updatedData);
+
+        return { user: updatedUser, status: "success" };
+    } catch (error) {
+        return {
+            status: "fail",
+            error,
+            message: "Error Happened."
+        };
+    }
+};
+
 module.exports = {
     addUserToDatabase,
     getUserFromDatabase,
@@ -503,5 +526,6 @@ module.exports = {
     completeUserDataInDatabase,
     getUserEventsFromDatabase,
     updateUserAssessmentInDatabase,
-    CalculateUserLevelInDatabase
+    CalculateUserLevelInDatabase,
+    addUserPlanInDatabase
 };

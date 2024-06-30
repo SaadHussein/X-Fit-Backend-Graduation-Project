@@ -1,6 +1,6 @@
 const express = require('express');
 const userRouter = express.Router();
-const { HelloUser, addUser, getUser, registerUser, loginUser, logoutUser, verifyEmail, forgetPassword, resetPassword, createUser, completeUserData, getUserEvents, updateUserAssessment, CalculateUserLevel } = require('./user.controller');
+const { addUserPlan, HelloUser, addUser, getUser, registerUser, loginUser, logoutUser, verifyEmail, forgetPassword, resetPassword, createUser, completeUserData, getUserEvents, updateUserAssessment, CalculateUserLevel } = require('./user.controller');
 const jwtAuthentication = require('../../middleware/authentication');
 
 userRouter.get('/helloUser', HelloUser);
@@ -20,5 +20,7 @@ userRouter.patch('/completeUserData', completeUserData);
 userRouter.get('/userEvents', jwtAuthentication, getUserEvents);
 userRouter.post("/updateUserAssessment", jwtAuthentication, updateUserAssessment);
 userRouter.patch("/calculateUserLevel", jwtAuthentication, CalculateUserLevel);
+
+userRouter.patch("/add-plan", jwtAuthentication, addUserPlan);
 
 module.exports = userRouter;

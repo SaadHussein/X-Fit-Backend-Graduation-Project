@@ -340,5 +340,5 @@ module.exports = {
     editCircleDataInDatabase,
     memberLeaveFromCircle,
     addUserToCircleWithInvitationLinkToDatabase,
-    memberJoinCircleInDatabase
+    memberJoinCircleInDatabase,
 };
